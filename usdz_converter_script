@@ -1,0 +1,15 @@
+
+####################################
+
+# USDZ Converter Script
+# Version 1.0
+# Scotty Wilson - scottyw@apple.com
+# WORK IN PROGRESS!!!
+
+####################################
+
+# Get directory this script is located in.
+
+# Get filename for assets to convert
+
+print('test')
