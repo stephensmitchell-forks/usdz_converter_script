@@ -154,20 +154,13 @@ texture_maps = available_assets[1:]
 
 output_command_string = 'xcrun usdz_converter ' + threedee_asset + ' ' + output_filename + ' ' + object_name + ' ' + ' '.join(texture_maps)
 
-print('This is the available 3D asset:')
-print(threedee_asset)
-print('')
-print('The object name is:')
-print(object_name)
-print('')
-print('These are the available texture maps:')
-for texture_map in texture_maps:
-	print(texture_map)
-print('')
+# print('------------')
+# print('Final output string:')
+# print(output_command_string)
 
-print('------------')
-print('Final output string:')
-print(output_command_string)
+from subprocess import call
+call("ls")
+
 
 
 
