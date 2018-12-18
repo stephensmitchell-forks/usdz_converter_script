@@ -12,6 +12,16 @@ import os
 import glob
 from os import walk
 
+# Function to print header
+def print_header():
+	print('USDZ Converter Script')
+	print('----------')
+	print('')
+	print('Version 1.0')
+	print('Scotty Wilson - scottyw@apple.com')
+	print('WORK IN PROGRESS!!!')
+	print('----------')
+	print('')
 
 # Function to determine what assets are available
 def determine_available_assets(files_in_directory):
@@ -20,13 +30,19 @@ def determine_available_assets(files_in_directory):
 	has_obj = False
 	has_gltf = False
 
-	alembic_filename = ""
-	obj_filename = ""
-	gltf_filename = ""
-	asset_filename = ""
+	threedee_asset = ""
 
 	# Determine what kind of 3D asset we're using
-
+	for asset in files_in_directory:
+		if ".abc" in asset and not has_alembic:
+			has_alembic = True
+			threedee = asset
+		elif ".obj" in asset and not has_obj:
+			has_obj = True
+			threedee = asset
+		elif ".gltf" in asset and not has_gltf:
+			has_gltf = True
+			threedee = asset
 
 	# How may .pngs are there?
 	png_count = len(glob.glob1(cwd, "*.png"))
@@ -35,6 +51,13 @@ def determine_available_assets(files_in_directory):
 	png_assets = []
 	for file in glob.glob('*.png'):
 		png_assets.append(file)
+
+	print("Checking for available 3D assets:")
+	print("----------")
+	print("Alembic: " + str(has_alembic))
+	print("OBJ: " + str(has_obj))
+	print("GLTF: " + str(has_gltf))
+	print("----------")
 
 	determine_available_maps(png_assets)
 
@@ -48,41 +71,44 @@ def determine_available_maps(png_assets):
 	has_ao = False
 	has_emissive = False
 
-	albedo_filename = ""
-	roughness_filename = ""
-	metallic_filename = ""
-	normal_filename = ""
-	ao_filename = ""
-	emissive_filename = ""
+	albedo_asset = ""
+	roughness_asset = ""
+	metallic_asset = ""
+	normal_asset = ""
+	ao_asset = ""
+	emissive_asset = ""
  
 	for asset in png_assets:
 		if "_Albedo.png" in asset and not has_albedo:
 			has_albedo = True
-			albedo_filename = asset
+			albedo_asset = asset
 		elif "_Roughness.png" in asset and not has_roughness:
 			has_roughness = True
-			roughness_filename = asset
+			roughness_asset = asset
 		elif "_Metallic.png" in asset and not has_metallic:
 			has_metallic = True
-			metallic_filename = asset
+			metallic_asset = asset
 		elif "_Normal.png" in asset and not has_normal:
 			has_normal = True
-			normal_filename = asset
+			normal_asset = asset
 		elif "_AO.png" in asset and not has_ao:
 			has_ao = True
-			ao_filename = asset
+			ao_asset = asset
 		elif "_Emissive.png" in asset and not has_emissive:
 			has_emissive = True
-			emissive_filename = asset
+			emissive_asset = asset
 
 
-	print("Available Maps:")
-	print("Albedo: " + str(has_albedo) + " -- " + albedo_filename)
-	print("Roughness: " + str(has_roughness) + " -- " + roughness_filename)
-	print("Metallic: " + str(has_metallic) + " -- " + metallic_filename)
-	print("Normal: " + str(has_normal) + " -- " + normal_filename)
-	print("AO: " + str(has_ao) + " -- " + ao_filename)
-	print("Emissive: " + str(has_emissive) + " -- " + emissive_filename)
+	print('')
+	print("Checking for available texture maps:")
+	print("----------")
+	print("Albedo: " + str(has_albedo))
+	print("Roughness: " + str(has_roughness))
+	print("Metallic: " + str(has_metallic))
+	print("Normal: " + str(has_normal))
+	print("AO: " + str(has_ao))
+	print("Emissive: " + str(has_emissive))
+	print("----------")
 
 
 
@@ -98,4 +124,5 @@ for (dirpath, dirnames, filenames) in walk(cwd):
 # XCode usdz_converter command
 initial_command = 'xcrun usdz_converter'
 
+print_header()
 determine_available_assets(files_in_directory)
