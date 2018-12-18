@@ -13,7 +13,7 @@ import glob
 from os import walk
 
 # Name of object in scene (trying to figure out a way to automate this bit)
-object_name = "test_object"
+object_names = ["test_object", "test_object2"]
 output_filename = "out.usdz"
 
 
@@ -152,7 +152,16 @@ available_assets = get_available_assets(files_in_directory)
 threedee_asset = available_assets[0]
 texture_maps = available_assets[1:]
 
-output_command_string = 'xcrun usdz_converter ' + threedee_asset + ' ' + output_filename + ' ' + object_name + ' ' + ' '.join(texture_maps)
+combined_objects_and_materials = []
+
+for object_name in object_names:
+	additional_string = '-g ' + object_name + ' ' + ' '.join(texture_maps)
+	combined_objects_and_materials.append(additional_string)
+
+output_command_string = 'xcrun usdz_converter ' + threedee_asset + ' ' + output_filename + ' ' + ' '.join(combined_objects_and_materials)
+# output_command_string = 'xcrun usdz_converter ' + threedee_asset + '\n' + output_filename + '\n' + '\n'.join(combined_objects_and_materials)
+
+
 
 # print('------------')
 # print('Final output string:')
