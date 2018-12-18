@@ -158,8 +158,8 @@ output_command_string = 'xcrun usdz_converter ' + threedee_asset + ' ' + output_
 # print('Final output string:')
 # print(output_command_string)
 
-from subprocess import call
-call("ls")
+import os
+os.system(output_command_string)
 
 
 
