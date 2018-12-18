@@ -8,8 +8,94 @@
 
 ####################################
 
+import os
+import glob
+from os import walk
+
+
+# Function to determine what assets are available
+def determine_available_assets(files_in_directory):
+
+	has_alembic = False
+	has_obj = False
+	has_gltf = False
+
+	alembic_filename = ""
+	obj_filename = ""
+	gltf_filename = ""
+	asset_filename = ""
+
+	# Determine what kind of 3D asset we're using
+
+
+	# How may .pngs are there?
+	png_count = len(glob.glob1(cwd, "*.png"))
+
+	# Add .png files to list
+	png_assets = []
+	for file in glob.glob('*.png'):
+		png_assets.append(file)
+
+	determine_available_maps(png_assets)
+
+# Function to check for maps
+def determine_available_maps(png_assets):
+
+	has_albedo = False
+	has_roughness = False
+	has_metallic = False
+	has_normal = False
+	has_ao = False
+	has_emissive = False
+
+	albedo_filename = ""
+	roughness_filename = ""
+	metallic_filename = ""
+	normal_filename = ""
+	ao_filename = ""
+	emissive_filename = ""
+ 
+	for asset in png_assets:
+		if "_Albedo.png" in asset and not has_albedo:
+			has_albedo = True
+			albedo_filename = asset
+		elif "_Roughness.png" in asset and not has_roughness:
+			has_roughness = True
+			roughness_filename = asset
+		elif "_Metallic.png" in asset and not has_metallic:
+			has_metallic = True
+			metallic_filename = asset
+		elif "_Normal.png" in asset and not has_normal:
+			has_normal = True
+			normal_filename = asset
+		elif "_AO.png" in asset and not has_ao:
+			has_ao = True
+			ao_filename = asset
+		elif "_Emissive.png" in asset and not has_emissive:
+			has_emissive = True
+			emissive_filename = asset
+
+
+	print("Available Maps:")
+	print("Albedo: " + str(has_albedo) + " -- " + albedo_filename)
+	print("Roughness: " + str(has_roughness) + " -- " + roughness_filename)
+	print("Metallic: " + str(has_metallic) + " -- " + metallic_filename)
+	print("Normal: " + str(has_normal) + " -- " + normal_filename)
+	print("AO: " + str(has_ao) + " -- " + ao_filename)
+	print("Emissive: " + str(has_emissive) + " -- " + emissive_filename)
+
+
+
 # Get directory this script is located in.
+cwd = os.getcwd()
 
 # Get filename for assets to convert
+files_in_directory = []
+for (dirpath, dirnames, filenames) in walk(cwd):
+    files_in_directory.extend(filenames)
+    break
 
-print('test')
+# XCode usdz_converter command
+initial_command = 'xcrun usdz_converter'
+
+determine_available_assets(files_in_directory)
