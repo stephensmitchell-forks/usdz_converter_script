@@ -12,6 +12,11 @@ import os
 import glob
 from os import walk
 
+# Name of object in scene (trying to figure out a way to automate this bit)
+object_name = "test_object"
+output_filename = "out.usdz"
+
+
 # Function to print header
 def print_header():
 	print('USDZ Converter Script')
@@ -24,25 +29,29 @@ def print_header():
 	print('')
 
 # Function to determine what assets are available
-def determine_available_assets(files_in_directory):
+def get_available_assets(files_in_directory):
 
 	has_alembic = False
 	has_obj = False
 	has_gltf = False
 
 	threedee_asset = ""
+	available_assets = []
 
 	# Determine what kind of 3D asset we're using
 	for asset in files_in_directory:
 		if ".abc" in asset and not has_alembic:
 			has_alembic = True
-			threedee = asset
+			threedee_asset = asset
+			break
 		elif ".obj" in asset and not has_obj:
 			has_obj = True
-			threedee = asset
+			threedee_asset = asset
+			break
 		elif ".gltf" in asset and not has_gltf:
 			has_gltf = True
-			threedee = asset
+			threedee_asset = asset
+			break
 
 	# How may .pngs are there?
 	png_count = len(glob.glob1(cwd, "*.png"))
@@ -59,10 +68,16 @@ def determine_available_assets(files_in_directory):
 	print("GLTF: " + str(has_gltf))
 	print("----------")
 
-	determine_available_maps(png_assets)
+	available_assets.append(threedee_asset)
+	for png_asset in get_available_maps(png_assets):
+		available_assets.append(png_asset)
+
+	return available_assets
+
+# Function to retrieve filename of 3D asset
 
 # Function to check for maps
-def determine_available_maps(png_assets):
+def get_available_maps(png_assets):
 
 	has_albedo = False
 	has_roughness = False
@@ -77,26 +92,34 @@ def determine_available_maps(png_assets):
 	normal_asset = ""
 	ao_asset = ""
 	emissive_asset = ""
+
+	available_maps = []
  
 	for asset in png_assets:
 		if "_Albedo.png" in asset and not has_albedo:
 			has_albedo = True
-			albedo_asset = asset
+			albedo_asset = '-color_map ' + asset
+			available_maps.append(albedo_asset)
 		elif "_Roughness.png" in asset and not has_roughness:
 			has_roughness = True
-			roughness_asset = asset
+			roughness_asset = '-roughness_map ' + asset
+			available_maps.append(roughness_asset)
 		elif "_Metallic.png" in asset and not has_metallic:
 			has_metallic = True
-			metallic_asset = asset
+			metallic_asset = '-metallic_map ' + asset
+			available_maps.append(metallic_asset)
 		elif "_Normal.png" in asset and not has_normal:
 			has_normal = True
-			normal_asset = asset
+			normal_asset = '-normal_map ' + asset
+			available_maps.append(normal_asset)
 		elif "_AO.png" in asset and not has_ao:
 			has_ao = True
-			ao_asset = asset
+			ao_asset = '-ao_map ' + asset
+			available_maps.append(ao_asset)
 		elif "_Emissive.png" in asset and not has_emissive:
 			has_emissive = True
-			emissive_asset = asset
+			emissive_asset = '-emissive_map ' + asset
+			available_maps.append(emissive_asset)
 
 
 	print('')
@@ -110,6 +133,7 @@ def determine_available_maps(png_assets):
 	print("Emissive: " + str(has_emissive))
 	print("----------")
 
+	return available_maps
 
 
 # Get directory this script is located in.
@@ -122,7 +146,29 @@ for (dirpath, dirnames, filenames) in walk(cwd):
     break
 
 # XCode usdz_converter command
-initial_command = 'xcrun usdz_converter'
-
 print_header()
-determine_available_assets(files_in_directory)
+
+available_assets = get_available_assets(files_in_directory)
+threedee_asset = available_assets[0]
+texture_maps = available_assets[1:]
+
+output_command_string = 'xcrun usdz_converter ' + threedee_asset + ' ' + output_filename + ' ' + object_name + ' ' + ' '.join(texture_maps)
+
+print('This is the available 3D asset:')
+print(threedee_asset)
+print('')
+print('The object name is:')
+print(object_name)
+print('')
+print('These are the available texture maps:')
+for texture_map in texture_maps:
+	print(texture_map)
+print('')
+
+print('------------')
+print('Final output string:')
+print(output_command_string)
+
+
+
+
